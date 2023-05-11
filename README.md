@@ -20,6 +20,10 @@ qt 与 JS 交互请查看 [bridge 类](./deeplink_ui/bridge.h), [JS 示例](./de
 
 [SDK接口文档](./sdk_user_manual.md)
 
+## win32_sdk_example
+
+用纯 WIN32 API 实现的一个访问接口的示例。
+
 ## 注意
 
 所有代码示例仅供参考。

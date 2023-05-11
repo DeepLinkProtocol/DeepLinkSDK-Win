@@ -20,6 +20,10 @@ Example of a provider implemented with QT.
 
 [DeepLink SDK USER MANUAL](./sdk_user_manual.md)
 
+## win32_sdk_example
+
+Example of a provider implemented with pure WIN32 API.
+
 ## Notice
 
 All code samples are for reference only.
