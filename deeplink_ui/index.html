@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+		<title>connectBetweenCPPAndJS</title>
+        <script type="text/javascript" src="./qwebchannel.js"></script>
+        <script type="text/javascript">
+            //BEGIN SETUP
+            function output(message) {
+                var output = document.getElementById("output");
+                output.innerHTML = output.innerHTML + message + "\n";
+            }
+
+            function CallByCPP(n1) {
+                return n1;
+            }
+
+			function myFunction() {
+				var input = document.getElementById("input");
+				var text = input.value;
+				if (!text) {
+					return;
+				}
+
+				if (doc) {
+					// 如果需要接收 qt 函数的返回值，此处需要异步调用
+					// var response = await doc.say(text);
+					// output("Sent message: " + text + ", response: " + response);
+					doc.showMessageBox(text)
+				} else {
+					output("window.doc error")
+				}
+				input.value = "";
+				// core.receiveText(text);
+			}
+
+			new QWebChannel(qt.webChannelTransport,
+				function(channel) {
+					// doc 相当于QT的接口对象，由QT指定名称
+					window.doc = channel.objects.doc;
+				}
+			);
+            //END SETUP
+        </script>
+        <style type="text/css">
+            html {
+                height: 100%;
+                width: 100%;
+            }
+            #input {
+                width: 400px;
+                margin: 0 10px 0 0;
+            }
+            #send {
+                width: 90px;
+                margin: 0;
+            }
+            #output {
+                width: 500px;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <textarea id="output"></textarea><br />
+        <input id="input" /><input type="submit" id="send" value="Send" onclick="javascript:myFunction();" />
+    </body>
+</html>
