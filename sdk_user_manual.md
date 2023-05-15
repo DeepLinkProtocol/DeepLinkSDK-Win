@@ -42,6 +42,7 @@ Send data, deeplink will verify the id and token, and the connection that does n
 
 ```json
 {
+    "method": "auth",
     "code": 0,
     "message": "ok"
 }
@@ -69,6 +70,7 @@ The remote video process will create a new pipe to transmit status information, 
 
 ```json
 {
+    "method": "openConnect",
     "code": 0,
     "message": "ok",
     "data": {
@@ -112,6 +114,7 @@ The remote video process actively sends video transmission status information to
 回复数据
 ```json
 {
+    "method": "closeConnect",
     "code": 0,
     "message": "ok"
 }

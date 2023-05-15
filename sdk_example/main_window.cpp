@@ -48,6 +48,17 @@ void MainWindow::writeMessage(const QString &message)
     ipc->flush();
 }
 
+void MainWindow::createRemoteIpc(const QString &remote_ipc)
+{
+    QLocalSocket *client = new QLocalSocket(this);
+    connect(client, &QLocalSocket::connected, this, &MainWindow::onRemoteIpcConnected);
+    connect(client, &QLocalSocket::disconnected, this, &MainWindow::onRemoteIpcDisconnected);
+    connect(client, &QLocalSocket::errorOccurred, this, &MainWindow::onRemoteIpcErrorOccurred);
+    connect(client, &QLocalSocket::readyRead, this, &MainWindow::onRemoteIpcReadyRead);
+    showMessage("Begin to connecting with remote video process");
+    client->connectToServer(remote_ipc);
+}
+
 void MainWindow::on_pbtnConnect_clicked()
 {
     QLineEdit *edit = findChild<QLineEdit*>("leIpcName");
@@ -149,6 +160,17 @@ void MainWindow::on_pbtnCloseRemote_clicked()
     }
 }
 
+void MainWindow::on_pbtnConnectRemoteIpc_clicked()
+{
+    QLineEdit *edit = findChild<QLineEdit*>("leRemoteIpcName");
+    QString ipc_name = edit->text();
+    if (ipc_name.isEmpty()) {
+        QMessageBox::information(this, "info", "Ipc name of remote video process can not be empty");
+    } else {
+        createRemoteIpc(ipc_name);
+    }
+}
+
 void MainWindow::onIpcConnected()
 {
     showMessage("Ipc connected");
@@ -199,4 +221,85 @@ void MainWindow::onReadyRead()
     QString message;
     in >> message;
     showMessage("ipc received: " + message);
+
+    // parse received message
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8(), &error);
+    if (error.error == QJsonParseError::NoError && !doc.isNull()) {
+        QJsonObject root_obj = doc.object();
+        if (root_obj.contains("method") && root_obj["method"].isString()) {
+            QString method = root_obj["method"].toString();
+            if (method.compare("openConnect") == 0) {
+                if (root_obj.contains("data") && root_obj["data"].isObject()) {
+                    QJsonObject data_obj = root_obj["data"].toObject();
+                    if (data_obj.contains("remote_ipc") && data_obj["remote_ipc"].isString()) {
+                        QString remote_ipc = data_obj["remote_ipc"].toString();
+                        // createRemoteIpc(remote_ipc);
+                        QLineEdit *edit = findChild<QLineEdit*>("leRemoteIpcName");
+                        edit->setText(remote_ipc);
+                    }
+                }
+            }
+        } else {
+            showMessage("received message has no method field");
+        }
+    } else {
+        showMessage("parse message error: " + error.errorString());
+    }
+}
+
+void MainWindow::onRemoteIpcConnected()
+{
+    showMessage("Ipc of remote video process connected");
+    QPushButton *button = findChild<QPushButton*>("pbtnConnectRemoteIpc");
+    button->setEnabled(false);
+}
+
+void MainWindow::onRemoteIpcDisconnected()
+{
+    showMessage("Ipc of remote video process disconnected");
+    QPushButton *button = findChild<QPushButton*>("pbtnConnectRemoteIpc");
+    button->setEnabled(true);
+    QLocalSocket *client = qobject_cast<QLocalSocket *>(sender());
+    client->deleteLater();
+}
+
+void MainWindow::onRemoteIpcErrorOccurred(QLocalSocket::LocalSocketError socketError)
+{
+    QLocalSocket *client = qobject_cast<QLocalSocket *>(sender());
+    switch(socketError) {
+    case QLocalSocket::ServerNotFoundError:
+        showMessage("Ipc of remote video process not found");
+        break;
+    case QLocalSocket::ConnectionRefusedError:
+        showMessage("Ipc of remote video process connection refused");
+        break;
+    case QLocalSocket::PeerClosedError:
+        showMessage("Ipc of remote video process peer closed");
+        break;
+    default:
+        showMessage("Ipc of remote video process error: " + client->errorString());
+        break;
+    }
+}
+
+void MainWindow::onRemoteIpcReadyRead()
+{
+    QLocalSocket *client = qobject_cast<QLocalSocket *>(sender());
+    QDataStream in(client);
+    in.setByteOrder(QDataStream::LittleEndian);
+    in.setVersion(QDataStream::Qt_5_10);
+    quint32 block_size = 0;
+    if (client->bytesAvailable() < (int)sizeof(quint32)) {
+        showMessage("read message length failed in ipc of remote video process");
+        return;
+    }
+    in >> block_size;
+    if (client->bytesAvailable() < block_size || in.atEnd()) {
+        showMessage("read message body failed in ipc of remote video process");
+        return;
+    }
+    QString message;
+    in >> message;
+    showMessage("ipc of remote video process received: " + message);
 }
