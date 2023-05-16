@@ -30,11 +30,11 @@ Send data, deeplink will verify the id and token, and the connection that does n
 
 ```json
 {
-    "method": "auth",
-    "data": {
-        "id": "deeplink_test",
-        "token": "0123456789"
-    }
+    "method": "auth",
+    "data": {
+        "id": "deeplink_test",
+        "token": "0123456789"
+    }
 }
 ```
 
@@ -42,9 +42,9 @@ Send data, deeplink will verify the id and token, and the connection that does n
 
 ```json
 {
-    "method": "auth",
-    "code": 0,
-    "message": "ok"
+    "method": "auth",
+    "code": 0,
+    "message": "ok"
 }
 ```
 
@@ -54,13 +54,13 @@ Send data, deeplink will verify the id and token, and the connection that does n
 
 ```json
 {
-    "method": "openConnect",
-    "data": {
-        // 远程设备的识别码
-        "device": "123456789",
-        // 远程设备的验证码
-        "password": "123456"
-    }
+    "method": "openConnect",
+    "data": {
+        // 远程设备的识别码
+        "device": "123456789",
+        // 远程设备的验证码
+        "password": "123456"
+    }
 }
 ```
 
@@ -70,12 +70,12 @@ The remote video process will create a new pipe to transmit status information, 
 
 ```json
 {
-    "method": "openConnect",
-    "code": 0,
-    "message": "ok",
-    "data": {
-        "remote_ipc": "connect001"
-    }
+    "method": "openConnect",
+    "code": 0,
+    "message": "ok",
+    "data": {
+        "remote_ipc": "connect001"
+    }
 }
 ```
 
@@ -87,15 +87,15 @@ The remote video process actively sends video transmission status information to
 
 ```json
 {
-    "method": "videoInfo",
-    "data": {
-        "timestamp": 1683603451,
-        "rtt": 1,
-        "lost_rate": 0,
-        "est_bw": 5162,
-        "encode_fps": 32,
-        "encode_bitrate": 10080
-    }
+    "method": "videoInfo",
+    "data": {
+        "timestamp": 1683603451,
+        "rtt": 1,
+        "lost_rate": 0,
+        "est_bw": 5162,
+        "encode_fps": 32,
+        "encode_bitrate": 10080
+    }
 }
 ```
 
@@ -104,20 +104,20 @@ The remote video process actively sends video transmission status information to
 发送数据
 ```json
 {
-    "method": "closeConnect",
-    "data": {
-        // 远程设备的识别码
-        "device": "123456789"
-    }
+    "method": "closeConnect",
+    "data": {
+        // 远程设备的识别码
+        "device": "123456789"
+    }
 }
 ```
 
 回复数据
 ```json
 {
-    "method": "closeConnect",
-    "code": 0,
-    "message": "ok"
+    "method": "closeConnect",
+    "code": 0,
+    "message": "ok"
 }
 ```
 
@@ -132,8 +132,8 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
 发送数据
 ```json
 {
-    "method": "getDeviceInfo",
-    "data": {}
+    "method": "getDeviceInfo",
+    "data": {}
 }
 ```
 
@@ -141,7 +141,7 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
 ```json
 {
     "method": "getDeviceInfo",
-    "code": 0,
+    "code": 0,
     "message": "ok",
     "data": {
         "device_id": "123456789",
