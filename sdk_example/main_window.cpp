@@ -130,6 +130,7 @@ void MainWindow::on_pbtnOpenRemote_clicked()
         QJsonObject data_obj;
         data_obj["device"] = id;
         data_obj["password"] = password;
+        data_obj["fullscreen"] = true;
         root["data"] = data_obj;
         QString message = QJsonDocument(root).toJson();
         // qDebug() << message;

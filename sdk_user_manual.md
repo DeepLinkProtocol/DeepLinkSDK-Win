@@ -59,7 +59,9 @@ Send data, deeplink will verify the id and token, and the connection that does n
         // 远程设备的识别码
         "device": "123456789",
         // 远程设备的验证码
-        "password": "123456"
+        "password": "123456",
+        // 以全屏方式打开 (deeplink v0.0.0.5 增加)
+        "fullscreen": true
     }
 }
 ```
