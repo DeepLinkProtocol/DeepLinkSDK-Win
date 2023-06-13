@@ -17,8 +17,9 @@ public:
     ~MainWindow();
 
     void showMessage(const QString &message);
-    void writeMessage(const QString &message);
-    void createRemoteIpc(const QString &remote_ipc);
+    void writeMessage(const QString &message, QLocalSocket *client);
+    void createRemoteIpc(const QString &ipc_name);
+    void getRemoteControlledPrompt();
 
 private slots:
     void on_pbtnConnect_clicked();
@@ -32,6 +33,16 @@ private slots:
     void on_pbtnCloseRemote_clicked();
 
     void on_pbtnConnectRemoteIpc_clicked();
+
+    void on_pbtnSetConnectOption_clicked();
+
+    void on_pbtnSendData_clicked();
+
+    void on_pbtnCloseRemoteControlled_clicked();
+
+    void on_chbRemoteControlledSwitch_stateChanged(int arg1);
+
+    void on_pbtnSendData2_clicked();
 
 protected slots:
     // ipc with deeplink service program
@@ -48,5 +59,7 @@ protected slots:
 private:
     Ui::MainWindow *ui;
     QLocalSocket *ipc;
+    QLocalSocket *remote_ipc;
+
 };
 #endif // MAINWINDOW_H

@@ -5,10 +5,13 @@
 #include <QJsonObject>
 #include <QMessageBox>
 
+#include "../include/deeplink_sdk.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , ipc(new QLocalSocket(this))
+    , remote_ipc(nullptr)
 {
     ui->setupUi(this);
     connect(ipc, &QLocalSocket::connected, this, &MainWindow::onIpcConnected);
@@ -30,9 +33,9 @@ void MainWindow::showMessage(const QString &message)
     edit->append(message);
 }
 
-void MainWindow::writeMessage(const QString &message)
+void MainWindow::writeMessage(const QString &message, QLocalSocket *client)
 {
-    if (ipc->state() != QLocalSocket::ConnectedState) {
+    if (client->state() != QLocalSocket::ConnectedState) {
         showMessage("write failed because of ipc is not connected");
         return;
     }
@@ -44,19 +47,31 @@ void MainWindow::writeMessage(const QString &message)
     out << quint32(message.size());
     out << message;
     // qDebug() << "ipc send:" << block;
-    ipc->write(block);
-    ipc->flush();
+    client->write(block);
+    client->flush();
 }
 
-void MainWindow::createRemoteIpc(const QString &remote_ipc)
+void MainWindow::createRemoteIpc(const QString &ipc_name)
 {
-    QLocalSocket *client = new QLocalSocket(this);
-    connect(client, &QLocalSocket::connected, this, &MainWindow::onRemoteIpcConnected);
-    connect(client, &QLocalSocket::disconnected, this, &MainWindow::onRemoteIpcDisconnected);
-    connect(client, &QLocalSocket::errorOccurred, this, &MainWindow::onRemoteIpcErrorOccurred);
-    connect(client, &QLocalSocket::readyRead, this, &MainWindow::onRemoteIpcReadyRead);
+    remote_ipc = new QLocalSocket(this);
+    connect(remote_ipc, &QLocalSocket::connected, this, &MainWindow::onRemoteIpcConnected);
+    connect(remote_ipc, &QLocalSocket::disconnected, this, &MainWindow::onRemoteIpcDisconnected);
+    connect(remote_ipc, &QLocalSocket::errorOccurred, this, &MainWindow::onRemoteIpcErrorOccurred);
+    connect(remote_ipc, &QLocalSocket::readyRead, this, &MainWindow::onRemoteIpcReadyRead);
     showMessage("Begin to connecting with remote video process");
-    client->connectToServer(remote_ipc);
+    remote_ipc->connectToServer(ipc_name);
+}
+
+void MainWindow::getRemoteControlledPrompt()
+{
+    // JSON message
+    QJsonObject root;
+    root["method"] = "getRemoteControlledPrompt";
+    QJsonObject data_obj;
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, ipc);
 }
 
 void MainWindow::on_pbtnConnect_clicked()
@@ -93,7 +108,7 @@ void MainWindow::on_pbtnAuth_clicked()
         root["data"] = data_obj;
         QString message = QJsonDocument(root).toJson();
         // qDebug() << message;
-        writeMessage(message);
+        writeMessage(message, ipc);
     }
 }
 
@@ -108,7 +123,7 @@ void MainWindow::on_pbtnGetDeviceInfo_clicked()
     root["method"] = "getDeviceInfo";
     QString message = QJsonDocument(root).toJson();
     // qDebug() << message;
-    writeMessage(message);
+    writeMessage(message, ipc);
 }
 
 void MainWindow::on_pbtnOpenRemote_clicked()
@@ -119,6 +134,7 @@ void MainWindow::on_pbtnOpenRemote_clicked()
     }
     QLineEdit *editId = findChild<QLineEdit*>("leDeviceId");
     QLineEdit *editPassword = findChild<QLineEdit*>("leDevicePassword");
+    QCheckBox *chbFullScreen = findChild<QCheckBox*>("chbFullScreen");
     QString id = editId->text();
     QString password = editPassword->text();
     if (id.isEmpty() || password.isEmpty()) {
@@ -130,11 +146,12 @@ void MainWindow::on_pbtnOpenRemote_clicked()
         QJsonObject data_obj;
         data_obj["device"] = id;
         data_obj["password"] = password;
-        data_obj["fullscreen"] = true;
+        if (chbFullScreen)
+            data_obj["fullscreen"] = chbFullScreen->isChecked();
         root["data"] = data_obj;
         QString message = QJsonDocument(root).toJson();
         // qDebug() << message;
-        writeMessage(message);
+        writeMessage(message, ipc);
     }
 }
 
@@ -157,7 +174,7 @@ void MainWindow::on_pbtnCloseRemote_clicked()
         root["data"] = data_obj;
         QString message = QJsonDocument(root).toJson();
         // qDebug() << message;
-        writeMessage(message);
+        writeMessage(message, ipc);
     }
 }
 
@@ -237,9 +254,38 @@ void MainWindow::onReadyRead()
                         QString remote_ipc = data_obj["remote_ipc"].toString();
                         // createRemoteIpc(remote_ipc);
                         QLineEdit *edit = findChild<QLineEdit*>("leRemoteIpcName");
-                        edit->setText(remote_ipc);
+                        if (edit) edit->setText(remote_ipc);
                     }
                 }
+            } else if (method.compare("auth") == 0) {
+                if (root_obj.contains("code") && root_obj["code"].isDouble()) {
+                    int error_code = root_obj["code"].toInt();
+                    if (error_code == 0)
+                        getRemoteControlledPrompt();
+                }
+            } else if (method.compare("getRemoteControlledPrompt") == 0) {
+                if (root_obj.contains("data") && root_obj["data"].isObject()) {
+                    QJsonObject data_obj = root_obj["data"].toObject();
+                    if (data_obj.contains("value") && data_obj["value"].isString()) {
+                        QString value = data_obj["value"].toString();
+                        QCheckBox *chb = findChild<QCheckBox*>("chbRemoteControlledSwitch");
+                        chb->setChecked(value.compare("on") == 0);
+                    }
+                }
+            } else if (method.compare("remoteControlledStarted") == 0) {
+                if (root_obj.contains("data") && root_obj["data"].isObject()) {
+                    QJsonObject data_obj = root_obj["data"].toObject();
+                    QString device;
+                    if (data_obj.contains("device") && data_obj["device"].isString())
+                        device = data_obj["device"].toString();
+                    if (!device.isEmpty()) {
+                        QLineEdit *edit = findChild<QLineEdit*>("leRemoteControlledById");
+                        if (edit) edit->setText(device);
+                    }
+                }
+            } else if (method.compare("remoteControlledStopped") == 0) {
+                QLineEdit *edit = findChild<QLineEdit*>("leRemoteControlledById");
+                if (edit) edit->clear();
             }
         } else {
             showMessage("received message has no method field");
@@ -263,6 +309,9 @@ void MainWindow::onRemoteIpcDisconnected()
     button->setEnabled(true);
     QLocalSocket *client = qobject_cast<QLocalSocket *>(sender());
     client->deleteLater();
+    remote_ipc = nullptr;
+    QLineEdit *edit = findChild<QLineEdit*>("leRemoteIpcName");
+    if (edit) edit->clear();
 }
 
 void MainWindow::onRemoteIpcErrorOccurred(QLocalSocket::LocalSocketError socketError)
@@ -303,4 +352,118 @@ void MainWindow::onRemoteIpcReadyRead()
     QString message;
     in >> message;
     showMessage("ipc of remote video process received: " + message);
+}
+
+void MainWindow::on_pbtnSetConnectOption_clicked()
+{
+    if (!remote_ipc) return;
+    static int click_cout = 0;
+    // JSON message
+    QJsonObject root;
+    root["method"] = "setConnectOption";
+    QJsonObject data_obj;
+    data_obj["option"] = kOptionVideoBitrate;
+    data_obj["value"] = (click_cout % 2 == 0 ? "0" : "40");
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, remote_ipc);
+    ++click_cout;
+}
+
+void MainWindow::on_pbtnSendData_clicked()
+{
+    if (!remote_ipc) return;
+    if (remote_ipc->state() != QLocalSocket::ConnectedState) return;
+    static int int_value = 100;
+    static double double_value = 3.1415926f;
+    static bool bool_value = true;
+    // JSON message
+    QJsonObject root;
+    root["method"] = "sendData";
+    QJsonObject data_obj;
+    data_obj["int"] = int_value;
+    data_obj["double"] = double_value;
+    data_obj["bool"] = bool_value;
+    data_obj["string"] = "this is a test string";
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, remote_ipc);
+    ++int_value;
+    double_value = double_value * 2;
+    bool_value = !bool_value;
+}
+
+void MainWindow::on_pbtnCloseRemoteControlled_clicked()
+{
+    if (ipc->state() != QLocalSocket::ConnectedState) {
+        QMessageBox::information(this, "info", "Please connect ipc first");
+        return;
+    }
+    QLineEdit *editId = findChild<QLineEdit*>("leRemoteControlledById");
+    QString id = editId->text();
+    if (id.isEmpty()) {
+        QMessageBox::information(this, "info", "Device id is empty");
+    } else {
+        // JSON message
+        QJsonObject root;
+        root["method"] = "closeRemoteControlled";
+        QJsonObject data_obj;
+        data_obj["device"] = id;
+        root["data"] = data_obj;
+        QString message = QJsonDocument(root).toJson();
+        // qDebug() << message;
+        writeMessage(message, ipc);
+    }
+}
+
+void MainWindow::on_chbRemoteControlledSwitch_stateChanged(int arg1)
+{
+    if (ipc->state() != QLocalSocket::ConnectedState) {
+        QMessageBox::information(this, "info", "Please connect ipc first");
+        return;
+    }
+    QCheckBox *chb = findChild<QCheckBox*>("chbRemoteControlledSwitch");
+    if (!chb) return;
+    // JSON message
+    QJsonObject root;
+    root["method"] = "setRemoteControlledPrompt";
+    QJsonObject data_obj;
+    data_obj["value"] = chb->isChecked() ? "on" : "off";
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, ipc);
+}
+
+void MainWindow::on_pbtnSendData2_clicked()
+{
+    if (ipc->state() != QLocalSocket::ConnectedState) {
+        QMessageBox::information(this, "info", "Please connect ipc first");
+        return;
+    }
+    QLineEdit *edit = findChild<QLineEdit*>("leRemoteControlledById");
+    if (!edit) return;
+    QString to_device = edit->text();
+    if (to_device.isEmpty()) return;
+    static int int_value = 100;
+    static double double_value = 3.1415926f;
+    static bool bool_value = true;
+    // JSON message
+    QJsonObject root;
+    root["method"] = "sendData";
+    root["to_device"] = to_device;
+    QJsonObject data_obj;
+    data_obj["int"] = int_value;
+    data_obj["double"] = double_value;
+    data_obj["bool"] = bool_value;
+    data_obj["string"] = "this is a test string";
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, ipc);
+    ++int_value;
+    double_value = double_value * 2;
+    bool_value = !bool_value;
 }

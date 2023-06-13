@@ -123,6 +123,179 @@ The remote video process actively sends video transmission status information to
 }
 ```
 
+### 6. 设置远程连接的一些参数 Set some parameters of the remote connection
+
+发送数据
+```json
+{
+    "method": "setConnectOption",
+    "data": {
+        "option": kOptionVideoBitrate,
+        "value": "0"
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "setConnectOption",
+    "code": 0,
+    "message": "ok"
+}
+```
+
+有关 option 、返回值和错误码请参考 [deeplink_sdk.h](./include/deeplink_sdk.h)
+
+For options, return values and error codes, please refer to [deeplink_sdk.h](./include/deeplink_sdk.h)
+
+注意: 此消息要在远程视频进程中创建的新管道中通信，参考 4.获取远程传输状态信息。
+
+Note: This message should be communicated in the new pipeline created in the remote video process, refer to 4.获取远程传输状态信息 Get remote transmission status.
+
+### 7. 被远程控制开始时会收到通知 Get notified when remote controlled is started
+
+收到数据
+```json
+{
+    "method": "remoteControlledStarted",
+    "data": {
+        // 发起远程的设备的识别码
+        "device": "123456789"
+    }
+}
+```
+
+注意: 此消息不需要回复。
+
+Note: This message does not require a reply.
+
+### 8. 可以断开被远程控制的状态 Close the remote controlled state
+
+发送数据
+```json
+{
+    "method": "closeRemoteControlled",
+    "data": {
+        // 发起远程的设备的识别码
+        "device": "123456789"
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "closeRemoteControlled",
+    "code": 0,
+    "message": "ok"
+}
+```
+
+### 9. 被远程控制结束时会收到通知 Get notified when remote controlled is stopped
+
+收到数据
+```json
+{
+    "method": "remoteControlledStopped",
+    "data": {
+        // 发起远程的设备的识别码
+        "device": "123456789"
+    }
+}
+```
+
+注意: 此消息不需要回复。
+
+Note: This message does not require a reply.
+
+### 10. 启用/禁用被远程控制开始时的提示窗口 Enable/disable prompt window when remote controled is started
+
+发送数据
+```json
+{
+    "method": "setRemoteControlledPrompt",
+    "data": {
+        "value": "off"
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "setRemoteControlledPrompt",
+    "code": 0,
+    "message": "ok"
+}
+```
+
+发送数据
+```json
+{
+    "method": "getRemoteControlledPrompt",
+    "data": {}
+}
+```
+
+回复数据
+```json
+{
+    "method": "getRemoteControlledPrompt",
+    "code": 0,
+    "message": "ok",
+    "data": {
+        "value": "on"
+    }
+}
+```
+
+### 11. 远程视频进程与被控端互相通信 The remote video process communicates with the controlled end
+
+1. 任何一方都可以发送数据。
+
+发送数据
+```json
+{
+    "method": "sendData",
+    "to_device": "xxxxxx",
+    "data": {
+        "int": 666,
+        "double": 3.1415926,
+        "bool": true,
+        "string": "this is a test string"
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "sendData",
+    "code": 0,
+    "message": "ok"
+}
+```
+
+2. 接收数据通知。
+
+```json
+{
+    "method": "receivedData",
+    "from_device": "xxxxxx",
+    "data": {
+        "int": 666,
+        "double": 3.1415926,
+        "bool": true,
+        "string": "this is a test string"
+    }
+}
+```
+
+注意: 此消息不需要回复。
+
+Note: This message does not require a reply.
+
 ## 5. 设备信息接口 Device info interface
 
 除了上述的接口外，还有些接口用来获取设备信息。
@@ -151,3 +324,20 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
     }
 }
 ```
+
+### 2. 设备信息变动通知 Device Information Change Notification
+
+收到数据
+```json
+{
+    "method": "deviceInfoChanged",
+    "data": {
+        "device_id": "123456789",
+        "password": "123456"
+    }
+}
+```
+
+注意: 此消息不需要回复。
+
+Note: This message does not require a reply.
