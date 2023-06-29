@@ -74,6 +74,21 @@ void MainWindow::getRemoteControlledPrompt()
     writeMessage(message, ipc);
 }
 
+void MainWindow::getAppVersion()
+{
+    if (ipc->state() != QLocalSocket::ConnectedState) {
+        return;
+    }
+    // JSON message
+    QJsonObject root;
+    root["method"] = "getAppVersion";
+    QJsonObject data_obj;
+    root["data"] = data_obj;
+    QString message = QJsonDocument(root).toJson();
+    // qDebug() << message;
+    writeMessage(message, ipc);
+}
+
 void MainWindow::on_pbtnConnect_clicked()
 {
     QLineEdit *edit = findChild<QLineEdit*>("leIpcName");
@@ -194,6 +209,7 @@ void MainWindow::onIpcConnected()
     showMessage("Ipc connected");
     QPushButton *button = findChild<QPushButton*>("pbtnConnect");
     button->setEnabled(false);
+    getAppVersion();
 }
 
 void MainWindow::onIpcDisconnected()
@@ -269,7 +285,12 @@ void MainWindow::onReadyRead()
                     if (data_obj.contains("value") && data_obj["value"].isString()) {
                         QString value = data_obj["value"].toString();
                         QCheckBox *chb = findChild<QCheckBox*>("chbRemoteControlledSwitch");
-                        chb->setChecked(value.compare("on") == 0);
+                        disconnect(chb, &QCheckBox::stateChanged,
+                                   this, &MainWindow::onRemoteControlledSwitchStateChanged);
+                        // chb->setChecked(value.compare("on") == 0);
+                        chb->setCheckState(value.compare("on") == 0 ? Qt::Checked : Qt::Unchecked);
+                        connect(chb, &QCheckBox::stateChanged,
+                                this, &MainWindow::onRemoteControlledSwitchStateChanged);
                     }
                 }
             } else if (method.compare("remoteControlledStarted") == 0) {
@@ -418,7 +439,7 @@ void MainWindow::on_pbtnCloseRemoteControlled_clicked()
     }
 }
 
-void MainWindow::on_chbRemoteControlledSwitch_stateChanged(int arg1)
+void MainWindow::onRemoteControlledSwitchStateChanged(int arg1)
 {
     if (ipc->state() != QLocalSocket::ConnectedState) {
         QMessageBox::information(this, "info", "Please connect ipc first");

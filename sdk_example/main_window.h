@@ -20,6 +20,7 @@ public:
     void writeMessage(const QString &message, QLocalSocket *client);
     void createRemoteIpc(const QString &ipc_name);
     void getRemoteControlledPrompt();
+    void getAppVersion();
 
 private slots:
     void on_pbtnConnect_clicked();
@@ -40,7 +41,7 @@ private slots:
 
     void on_pbtnCloseRemoteControlled_clicked();
 
-    void on_chbRemoteControlledSwitch_stateChanged(int arg1);
+    void onRemoteControlledSwitchStateChanged(int arg1);
 
     void on_pbtnSendData2_clicked();
 

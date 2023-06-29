@@ -325,7 +325,29 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
 }
 ```
 
-### 2. 设备信息变动通知 Device Information Change Notification
+### 2. 获取应用的版本号 Get application version
+
+发送数据
+```json
+{
+    "method": "getAppVersion",
+    "data": {}
+}
+```
+
+回复数据
+```json
+{
+    "method": "getAppVersion",
+    "code": 0,
+    "message": "ok",
+    "data": {
+        "version": "1.0.1.2"
+    }
+}
+```
+
+### 3. 设备信息变动通知 Device Information Change Notification
 
 收到数据
 ```json
@@ -341,3 +363,51 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
 注意: 此消息不需要回复。
 
 Note: This message does not require a reply.
+
+### 4. 服务器连接状态变化通知 Server connection status change notification
+
+收到数据
+```json
+{
+    "method": "serverConnStateChanged",
+    "data": {
+        "state": 1
+    }
+}
+```
+
+|   | state        | 状态 |
+| - | ------------ | ---- |
+| 0 | DisConnected | 未连接 |
+| 1 | Connected    | 已连接 |
+| 2 | Registered   | 已注册设备 |
+| 3 | Onlined      | 上线(此时才会启动 P2P 远程控制监听) |
+| 4 | Logined      | 已登录钱包 |
+
+注意: 此消息不需要回复。
+
+Note: This message does not require a reply.
+
+如果想要手动查询，可以发送如下的请求，可以收到包含状态码的回复数据。
+
+If you want to query manually, you can send the following request, and you can receive the reply data including the status code.
+
+发送数据
+```json
+{
+    "method": "getServerConnState",
+    "data": {}
+}
+```
+
+回复数据
+```json
+{
+    "method": "getServerConnState",
+    "code": 0,
+    "message": "ok",
+    "data": {
+        "state": 1
+    }
+}
+```
