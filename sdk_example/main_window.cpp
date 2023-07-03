@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ipc, &QLocalSocket::disconnected, this, &MainWindow::onIpcDisconnected);
     connect(ipc, &QLocalSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
     connect(ipc, &QLocalSocket::readyRead, this, &MainWindow::onReadyRead);
+    connect(this, &MainWindow::ipcMessageReceived, this, &MainWindow::onIpcMessageReceived);
 }
 
 MainWindow::~MainWindow()
@@ -242,18 +243,26 @@ void MainWindow::onReadyRead()
     QDataStream in(ipc);
     in.setByteOrder(QDataStream::LittleEndian);
     in.setVersion(QDataStream::Qt_5_10);
-    quint32 block_size = 0;
-    if (ipc->bytesAvailable() < (int)sizeof(quint32)) {
-        showMessage("read message length failed");
-        return;
+    while (!in.atEnd()) {
+        quint32 block_size = 0;
+        if (ipc->bytesAvailable() < (int)sizeof(quint32)) {
+            showMessage("read message length failed");
+            return;
+        }
+        in >> block_size;
+        if (ipc->bytesAvailable() < block_size || in.atEnd()) {
+            showMessage("read message body failed");
+            return;
+        }
+        QString message;
+        in >> message;
+
+        emit ipcMessageReceived(message);
     }
-    in >> block_size;
-    if (ipc->bytesAvailable() < block_size || in.atEnd()) {
-        showMessage("read message body failed");
-        return;
-    }
-    QString message;
-    in >> message;
+}
+
+void MainWindow::onIpcMessageReceived(const QString &message)
+{
     showMessage("ipc received: " + message);
 
     // parse received message
@@ -360,19 +369,21 @@ void MainWindow::onRemoteIpcReadyRead()
     QDataStream in(client);
     in.setByteOrder(QDataStream::LittleEndian);
     in.setVersion(QDataStream::Qt_5_10);
-    quint32 block_size = 0;
-    if (client->bytesAvailable() < (int)sizeof(quint32)) {
-        showMessage("read message length failed in ipc of remote video process");
-        return;
+    while (!in.atEnd()) {
+        quint32 block_size = 0;
+        if (client->bytesAvailable() < (int)sizeof(quint32)) {
+            showMessage("read message length failed in ipc of remote video process");
+            return;
+        }
+        in >> block_size;
+        if (client->bytesAvailable() < block_size || in.atEnd()) {
+            showMessage("read message body failed in ipc of remote video process");
+            return;
+        }
+        QString message;
+        in >> message;
+        showMessage("ipc of remote video process received: " + message);
     }
-    in >> block_size;
-    if (client->bytesAvailable() < block_size || in.atEnd()) {
-        showMessage("read message body failed in ipc of remote video process");
-        return;
-    }
-    QString message;
-    in >> message;
-    showMessage("ipc of remote video process received: " + message);
 }
 
 void MainWindow::on_pbtnSetConnectOption_clicked()

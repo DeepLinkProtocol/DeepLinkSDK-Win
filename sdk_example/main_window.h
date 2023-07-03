@@ -51,11 +51,15 @@ protected slots:
     void onIpcDisconnected();
     void onErrorOccurred(QLocalSocket::LocalSocketError socketError);
     void onReadyRead();
+    void onIpcMessageReceived(const QString &message);
     // ipc with remote video process
     void onRemoteIpcConnected();
     void onRemoteIpcDisconnected();
     void onRemoteIpcErrorOccurred(QLocalSocket::LocalSocketError socketError);
     void onRemoteIpcReadyRead();
+
+signals:
+    void ipcMessageReceived(const QString &message);
 
 private:
     Ui::MainWindow *ui;
