@@ -123,6 +123,10 @@ The remote video process actively sends video transmission status information to
 }
 ```
 
+使用此接口会强制结束进程，推荐使用远程窗口的关闭按钮等 UI 界面操作来优雅的结束远程。
+
+Using this interface will forcibly end the process. It is recommended to use UI interface operations such as the close button of the remote window to end the remote gracefully.
+
 ### 6. 设置远程连接的一些参数 Set some parameters of the remote connection
 
 发送数据
@@ -364,7 +368,32 @@ In addition to the above-mentioned interfaces, there are also some interfaces us
 
 Note: This message does not require a reply.
 
-### 4. 服务器连接状态变化通知 Server connection status change notification
+### 4. 设置设备的本机验证码 Set the native verification code of the device
+
+1.0.1.5 版本中增加。Added in version 1.0.1.5.
+
+发送数据
+```json
+{
+    "method": "setDevicePassword",
+    "data": {
+        // 仅支持6-16位字母和数字组合
+        // Only a combination of 6-16 letters and numbers is supported
+        "password": "123456"
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "setDevicePassword",
+    "code": 0,
+    "message": "ok"
+}
+```
+
+### 5. 服务器连接状态变化通知 Server connection status change notification
 
 收到数据
 ```json
@@ -411,3 +440,43 @@ If you want to query manually, you can send the following request, and you can r
     }
 }
 ```
+
+## 6. 错误代码 error code
+
+在请求返回的回复数据中，错误码"code"定义如下，可指代一种类别的错误，具体的错误请结合回复中的"message"字段进行分析。
+
+In the reply data returned by the request, the error code "code" is defined as follows, which can refer to a type of error. Please analyze the specific error in conjunction with the "message" field in the reply.
+
+| code | 定义(definition) | 说明(illustrate) |
+| ---- | ---------------- | ---------------- |
+| 0    | E_OK             | 成功(success)    |
+| 1    | E_FAIL           | 一般性失败(general error)  |
+| 2    | E_INNER          | 内部错误，不对外公开(internal error, not public) |
+| 3    | E_POINTER        | 指针错误(pointer error) |
+| 4    | E_INVALARG       | 参数错误(parameter error) |
+| 5    | E_NOTIMPL        | 功能未实现(function not implemented) |
+| 6    | E_OUTOFMEM       | 内存不足(not enough storage) |
+| 7    | E_BUFERROR       | 缓冲区错误(buffer error) |
+| 8    | E_PERM           | 权限错误(permission error) |
+| 9    | E_TIMEOUT        | 超时(timeout) |
+| 10   | E_NOTINIT        | 未初始化(uninitialized) |
+| 11   | E_INITFAIL       | 初始化失败(initialization failed) |
+| 12   | E_ALREADY        | 已初始化，已经在运行(initialized, already running) |
+| 13   | E_INPROGRESS     | 已在运行、进行状态(already running, in progress) |
+| 14   | E_EXIST          | 文件对象等资源已存在(A resource such as a file object already exists) |
+| 15   | E_NOTEXIST       | 文件对象等资源不存在(Resource such as file object does not exist) |
+| 16   | E_BUSY           | 设备或资源忙(device or resource busy) |
+| 17   | E_FULL           | 设备或资源忙(device or resource is full) |
+| 18   | E_EMPTY          | 资源为空(resource is empty) |
+| 19   | E_OPENFAIL       | 文件等资源对象打开失败(failed to open resource objects such as files) |
+| 20   | E_READFAIL       | 文件等资源对象读取/接收失败(failed to read/receive resource objects such as files) |
+| 21   | E_WRITEFAIL      | 文件等资源对象写入/发送失败(failed to write/send resource objects such as files) |
+| 22   | E_DELFAIL        | 文件等资源对象删除/关闭失败(failed to delete/close resource objects such as files) |
+| 23   | E_CODECFAIL      | 加密/解密、编码/解码失败(Encryption/decryption, encoding/decoding failed) |
+| 24   | E_CRC_FAIL       | CRC校验错误(CRC error) |
+| 25   | E_TOOMANY        | 消息、缓冲区、内容太多(too many messages, buffers, content) |
+| 26   | E_TOOSMALL       | 消息、缓冲区、内容太多(too few messages, buffers, content) |
+| 27   | E_NETNOTREACH    | 无路由，网关错误，网络不可达(no route, gateway error, network unreachable) |
+| 28   | E_NETDOWN        | 断网，网络不可用(the network is disconnected, the network is unavailable) |
+| 29   | E_JSONPARSEFAIL  | Json 解析错误(Json parsing error) |
+| ...  | ...              | ... |

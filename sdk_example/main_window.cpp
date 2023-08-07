@@ -173,6 +173,17 @@ void MainWindow::on_pbtnOpenRemote_clicked()
 
 void MainWindow::on_pbtnCloseRemote_clicked()
 {
+    if (remote_ipc) {
+        // JSON message
+        QJsonObject root;
+        root["method"] = "quit";
+        QJsonObject data_obj;
+        root["data"] = data_obj;
+        QString message = QJsonDocument(root).toJson();
+        // qDebug() << message;
+        writeMessage(message, remote_ipc);
+        return;
+    }
     if (ipc->state() != QLocalSocket::ConnectedState) {
         QMessageBox::information(this, "info", "Please connect ipc first");
         return;
