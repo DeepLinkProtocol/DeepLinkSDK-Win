@@ -60,15 +60,20 @@ Send data, deeplink will verify the id and token, and the connection that does n
         "device": "123456789",
         // 远程设备的验证码
         "password": "123456",
-        // 以全屏方式打开 (deeplink v0.0.0.5 增加)
-        "fullscreen": true
+        // 是否以全屏方式打开，默认为 false (deeplink v0.0.0.5 增加)
+        "fullscreen": true,
+        // 是否开启麦克风的传输，默认为 false (deeplink v1.0.1.6 增加)，需要被控端安装 VBCable Driver。
+        // Whether to enable microphone transmission, the default is false (deeplink v1.0.1.6 added). The controlled terminal needs to install VBCable Driver.
+        "microphone": true,
     }
 }
 ```
 
-远程视频进程会创建一个新的管道用来传输状态信息，管道名称见如下回复
+>VBCable Driver: <https://vb-audio.com/Cable/>
 
-The remote video process will create a new pipe to transmit status information, see the reply below for the name of the pipe
+远程视频进程会创建一个新的管道用来传输状态信息，管道名称见如下回复。
+
+The remote video process will create a new pipe to transmit status information, see the reply below for the name of the pipe.
 
 ```json
 {
@@ -81,11 +86,50 @@ The remote video process will create a new pipe to transmit status information, 
 }
 ```
 
+这个管道会在远程视频进程结束时关闭。
+
+This pipe will be closed when the remote video process ends.
+
 ### 4.获取远程传输状态信息 Get remote transmission status
 
-远程视频进程主动向连接管道的用户发送视频传输状态信息，每秒发送一次
+远程视频进程启动后，会进行以下操作:
 
-The remote video process actively sends video transmission status information to the user connected to the pipeline, and sends it once per second
+After the remote video process starts, the following operations will be performed:
+
+1. 初始化环境(Initialize the environment);
+2. 创建 client 实例(Create a client instance);
+3. 连接远程设备(Connect remote device);
+4. 协商麦克风的采用频率和格式等设置(Negotiate settings such as microphone adoption frequency and format);
+
+远程连接的结果将通过 "actionInfo" 方法通知给连接管道的用户。
+
+The result of the remote connection will be notified to the user of the connected pipe through the "actionInfo" method.
+
+```json
+{
+    "method": "actionInfo",
+    "data": {
+        "action": 2,// 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
+        "result": 0,// 参考 deeplink_sdk.h 文件中的 enum QDESKErrCode 错误码声明。
+        "message": "connect result 0"
+    }
+}
+```
+
+```json
+{
+    "method": "actionInfo",
+    "data": {
+        "action": 3,// 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
+        "result": 0,// 参考 deeplink_sdk.h 文件中的 enum MicrophoneError 错误码声明。
+        "message": "ok"
+    }
+}
+```
+
+远程设备连接成功后，进程会主动向连接管道的用户发送视频传输状态信息，每秒发送一次。
+
+After the remote device is successfully connected, the process will actively send video transmission status information to the user who is connected to the pipeline, and sends it once per second.
 
 ```json
 {

@@ -30,43 +30,47 @@ enum QDESKErrCode
     //成功
     QDErrCode_Success = 0,
     //未初始化
-    QDErrCode_UnInitialized =1000 ,
+    QDErrCode_UnInitialized =1000 , 
     //已经初始化
-    QDErrCode_Initialized ,
+    QDErrCode_Initialized , 
     //参数错误
-    QDErrCode_ParameterInvalid,
-    //未开始串流
-    QDErrCode_NotStartStream,
-    //已在串流中
-    QDErrCode_StreamStarted,
-    //FD错误
-    QDErrCode_FDInvalid,
-    //服务器连接失败
-    QDErrCode_LoginFail,
-    //license错误或者过期
-    QDErrCode_LicenseFail,
+    QDErrCode_ParameterInvalid, 
+    //会话不存在；
+    QDErrCode_Session_NoExist, 
+    //已经在串流中
+    QDErrCode_Session_Exist, 
     //内部错误
-    QDErrCode_Inner,
-    //认证失败
-    QDErrCode_AuthFail,
-    //认证超时
-    QDErrCode_AuthTimeout,
-    //创建视频流失败
-    QDErrCode_CreateVideoStream,
-    //渲染失败
-    QDErrCode_Render,
-    //web连接失败
-    QDErrCode_WebFailed,
-    //连接信令超时
-    QDErrCode_SignalTimeout,
-    //打洞超时
-    QDErrCode_P2PTimeout,
-    //中转失败
-    QDErrCode_TurnFail,
+    QDErrCode_Inner, 
+    QDErrCode_License_Invalid = 1007,
     // 没显示器
-    QDErrCode_No_Display,
+    QDErrCode_No_Display = 1100,   
     // 设备不在线
-    QDErrCode_DeviceNotExist,
+    QDErrCode_DeviceNotExist , 
+};
+
+enum QDESKAction {
+    // Initialize the environment
+    kActionInitialize = 0,
+    // Create a client instance
+    kActionCreateClient,
+    // Connect remote device
+    kActionConnect,
+    // Microphone
+    kActionMicrophone,
+};
+
+enum MicrophoneError {
+    Normal = 0,
+    CreateContextError,
+    ConnectBackendError,
+    SelectDeviceError,
+    GetDeviceError,
+    CreateStreamError,
+    OpenStreamError,
+    StartStreamError,
+    RingBufferError,
+    OpusError,
+    UnknownError,
 };
 
 #endif // DEEPLINK_SDK_H

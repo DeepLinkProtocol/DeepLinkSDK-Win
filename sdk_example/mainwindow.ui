@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>900</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -208,8 +208,8 @@
      <rect>
       <x>20</x>
       <y>200</y>
-      <width>741</width>
-      <height>351</height>
+      <width>861</width>
+      <height>451</height>
      </rect>
     </property>
    </widget>
@@ -350,13 +350,26 @@
      <string>SendData</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="chbMicrophone">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>100</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Microphone</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>900</width>
      <height>22</height>
     </rect>
    </property>

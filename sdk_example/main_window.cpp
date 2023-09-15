@@ -151,6 +151,7 @@ void MainWindow::on_pbtnOpenRemote_clicked()
     QLineEdit *editId = findChild<QLineEdit*>("leDeviceId");
     QLineEdit *editPassword = findChild<QLineEdit*>("leDevicePassword");
     QCheckBox *chbFullScreen = findChild<QCheckBox*>("chbFullScreen");
+    QCheckBox *chbMicrophone = findChild<QCheckBox*>("chbMicrophone");
     QString id = editId->text();
     QString password = editPassword->text();
     if (id.isEmpty() || password.isEmpty()) {
@@ -164,6 +165,8 @@ void MainWindow::on_pbtnOpenRemote_clicked()
         data_obj["password"] = password;
         if (chbFullScreen)
             data_obj["fullscreen"] = chbFullScreen->isChecked();
+        if (chbMicrophone)
+            data_obj["microphone"] = chbMicrophone->isChecked();
         root["data"] = data_obj;
         QString message = QJsonDocument(root).toJson();
         // qDebug() << message;
