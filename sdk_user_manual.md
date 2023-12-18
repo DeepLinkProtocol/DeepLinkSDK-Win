@@ -109,8 +109,10 @@ The result of the remote connection will be notified to the user of the connecte
 {
     "method": "actionInfo",
     "data": {
-        "action": 2,// 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
-        "result": 0,// 参考 deeplink_sdk.h 文件中的 enum QDESKErrCode 错误码声明。
+        // 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
+        "action": 2,
+        // 参考 deeplink_sdk.h 文件中的 enum QDESKErrCode 错误码声明。
+        "result": 0,
         "message": "connect result 0"
     }
 }
@@ -120,8 +122,10 @@ The result of the remote connection will be notified to the user of the connecte
 {
     "method": "actionInfo",
     "data": {
-        "action": 3,// 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
-        "result": 0,// 参考 deeplink_sdk.h 文件中的 enum MicrophoneError 错误码声明。
+        // 参考 deeplink_sdk.h 文件中的 enum QDESKAction 声明。
+        "action": 3,
+        // 参考 deeplink_sdk.h 文件中的 enum MicrophoneError 错误码声明。
+        "result": 0,
         "message": "ok"
     }
 }
@@ -136,11 +140,33 @@ After the remote device is successfully connected, the process will actively sen
     "method": "videoInfo",
     "data": {
         "timestamp": 1683603451,
+        // Is it on the local LAN?
+        "is_lan": 1,
+        // Is it relay?
+        "is_relay": 0,
         "rtt": 1,
         "lost_rate": 0,
-        "est_bw": 5162,
-        "encode_fps": 32,
-        "encode_bitrate": 10080
+        "est_bw": 102400,
+        "capture_fps": 120,
+        "encode_fps": 120,
+        "receive_fps": 119,
+        "present_fps": 60,
+        // Unit bps
+        "encode_bitrate": 64476160,
+        // Encoder
+        // 1 - AVC
+        // 2 - HEVC
+        // 0x20 - AV1
+        // others - VP8
+        "codec": 2,
+        // resolution 1920 * 1080
+        "width": 1920,
+        "height": 1080,
+        "fir_count": 0,
+        "pli_count": 4,
+        "nack_count": 0,
+        "packets_lost": 0,
+        "packets_sent": 7179
     }
 }
 ```
