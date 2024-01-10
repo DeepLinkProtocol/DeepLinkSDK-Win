@@ -219,9 +219,9 @@ Using this interface will forcibly end the process. It is recommended to use UI 
 }
 ```
 
-有关 option 、返回值和错误码请参考 [deeplink_sdk.h](./include/deeplink_sdk.h)
+有关 option 、返回值和错误码请参考 [deeplink_sdk.h](../include/deeplink_sdk.h)
 
-For options, return values and error codes, please refer to [deeplink_sdk.h](./include/deeplink_sdk.h)
+For options, return values and error codes, please refer to [deeplink_sdk.h](../include/deeplink_sdk.h)
 
 注意: 此消息要在远程视频进程中创建的新管道中通信，参考 4.获取远程传输状态信息。
 

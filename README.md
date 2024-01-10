@@ -18,7 +18,7 @@ qt 与 JS 交互请查看 [bridge 类](./deeplink_ui/bridge.h), [JS 示例](./de
 
 用 QT 实现的一个访问接口的示例。
 
-[SDK接口文档](./sdk_user_manual.md)
+[SDK接口文档](./docs/sdk_user_manual.md)
 
 ## win32_sdk_example
 
@@ -27,3 +27,6 @@ qt 与 JS 交互请查看 [bridge 类](./deeplink_ui/bridge.h), [JS 示例](./de
 ## 注意
 
 所有代码示例仅供参考。
+
+- [配置文件相关说明](./docs/configuration.md)
+- [云网吧关键信息](./docs/cloud_internet_cafe_key_information.md)

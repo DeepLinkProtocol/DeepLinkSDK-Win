@@ -18,7 +18,7 @@ Do not forget [qwebchannel.js](./deeplink_ui/qwebchannel.js)
 
 Example of a provider implemented with QT.
 
-[DeepLink SDK USER MANUAL](./sdk_user_manual.md)
+[DeepLink SDK USER MANUAL](./docs/sdk_user_manual.md)
 
 ## win32_sdk_example
 
@@ -27,3 +27,6 @@ Example of a provider implemented with pure WIN32 API.
 ## Notice
 
 All code samples are for reference only.
+
+- [Configuration file documentation](./docs/configuration.md)
+- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information.md)
