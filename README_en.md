@@ -28,5 +28,5 @@ Example of a provider implemented with pure WIN32 API.
 
 All code samples are for reference only.
 
-- [Configuration file documentation](./docs/configuration.md)
-- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information.md)
+- [Configuration file documentation](./docs/configuration_en.md)
+- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information_en.md)
