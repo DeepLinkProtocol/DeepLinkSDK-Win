@@ -102,9 +102,14 @@ d3d9=1
 
 ## 程序配置
 
-如需展示远程视频 fps、延迟等详细调试参数，可以修改 `C:\Program Files (x86)\DeepLink\quicdesk.cfg` 的如下内容:
+如需展示远程视频 fps、延迟等详细调试参数，或者记录更详细的远程日志，可以修改 `C:\Program Files (x86)\DeepLink\quicdesk.cfg` 的如下内容:
 
 ```ini
+[log]
+level=191
+# log path 位于用户文件夹 %APPDATA% ，由实际用户名确定。
+path=C:\Users\<username>\AppData\Roaming
+
 [client]
 debug_wnd=1
 ```

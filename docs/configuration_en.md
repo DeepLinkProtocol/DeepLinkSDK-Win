@@ -102,9 +102,14 @@ d3d9=1
 
 ## Program configuration.
 
-To display detailed debugging parameters such as remote video FPS and latency, modify the following contents in `C:\Program Files (x86)\DeepLink\quicdesk.cfg`:
+To display detailed debugging parameters such as remote video FPS and latency, or record more detailed remote logs, modify the following contents in `C:\Program Files (x86)\DeepLink\quicdesk.cfg`:
 
 ```ini
+[log]
+level=191
+# The log path is located in the user folder %APPDATA% and is determined by the actual username.
+path=C:\Users\<username>\AppData\Roaming
+
 [client]
 debug_wnd=1
 ```
