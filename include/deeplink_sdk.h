@@ -13,6 +13,9 @@ enum QDESK_Event {
     QDEvent_OnDisConnected, // qdesk server disconnect
     QDEvent_OnReConnecting, //qdesk server reconnect
     QDEvent_OnAuthFailed, // auth failed
+    QDEvent_OnP2PReConnecting, // p2p disconnect
+    QDEvent_OnP2PTimeout, // p2p disconnect
+    QDEvent_OnP2PFailedTooMany, // p2p failed too many times;
 };
 
 enum QDESKOption {
@@ -22,30 +25,40 @@ enum QDESKOption {
     kOptionBlackScreen, // 开启或关闭"黑屏"，默认关闭
     kOptionVideoLossless, // 开启或关闭"无损画质"，默认关闭
     kOptionVideoBitrate, // 设置固定"视频码率", 单位Mbit/s， 0为auto;
+    kOptionSound,
+    kOptionInput, // 开启或关闭"输入"，默认开启，暂不实现
+    kOptionRemoteDeviceMute, // 开启或关闭"被控设备静音"，默认关闭。
+
+    kOptionCursor, // 设置"光标"，默认本地光标
+    kOptionControlPanelWnd, // 显示或隐藏"控制面板窗口"，默认显示
+    kOptionFpsWnd, // 显示或隐藏"FPS窗口"，默认显示
+    kOptionLanguage, // 设置"语言"，"1" 中文, "2" 英文, 默认中文
 };
 
 // error code
 enum QDESKErrCode
 {
-    //成功
     QDErrCode_Success = 0,
-    //未初始化
-    QDErrCode_UnInitialized =1000 , 
-    //已经初始化
-    QDErrCode_Initialized , 
-    //参数错误
-    QDErrCode_ParameterInvalid, 
-    //会话不存在；
-    QDErrCode_Session_NoExist, 
-    //已经在串流中
-    QDErrCode_Session_Exist, 
-    //内部错误
-    QDErrCode_Inner, 
-    QDErrCode_License_Invalid = 1007,
-    // 没显示器
-    QDErrCode_No_Display = 1100,   
-    // 设备不在线
-    QDErrCode_DeviceNotExist , 
+    QDErrCode_UnInitialized =1000, // 未初始化
+    QDErrCode_Initialized, // 已经初始化
+    QDErrCode_ParameterInvalid, // 参数错误
+    QDErrCode_Session_NotExist, // 未开始串流
+    QDErrCode_Session_Exist, // 已经在串流中
+    QDErrCode_DeviceNotExist, // 设备不在线
+    QDErrCode_WEBConnectTimeout, // 业务服务器连接失败;
+    QDErrCode_SignalTimeout, // 连接信令超时;
+    QDErrCode_P2PTimeout, // 打洞超时;
+    QDErrCode_RelayFailed, // 中转失败;
+    QDErrCode_AuthFailed, // 认证失败
+    QDErrCode_AuthTimeout, // 认证超时
+    QDErrCode_No_Display, // 没显示器
+    QDErrCode_MaxConnection, // 设备达到最大串流数量，目前限制为4；
+    QDErrCode_InvaildType, // 连接方式错误
+    QDErrCode_Inner, // 内部错误
+    // for offline;
+    QDErrCode_InvaildCompany = 0x200, // 企业信息错误;
+    QDErrCode_License_Invalid, // license错误;
+    QDErrCode_AuthLicenseDeviceOverLimit,
 };
 
 enum QDESKAction {

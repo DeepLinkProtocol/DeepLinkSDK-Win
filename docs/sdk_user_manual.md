@@ -131,6 +131,21 @@ The result of the remote connection will be notified to the user of the connecte
 }
 ```
 
+信令服务器和 P2P 等连接状态将通过 "eventInfo" 方法通知给连接管道的用户。
+
+Connection status such as signaling server and P2P will be notified to the user of the connection pipe through the "eventInfo" method.
+
+```json
+{
+    "method": "eventInfo",
+    "data": {
+        // 参考 deeplink_sdk.h 文件中的 enum QDESK_Event 声明。
+        "event": 2,
+        "event_string": "P2P connect success"
+    }
+}
+```
+
 远程设备连接成功后，进程会主动向连接管道的用户发送视频传输状态信息，每秒发送一次。
 
 After the remote device is successfully connected, the process will actively send video transmission status information to the user who is connected to the pipeline, and sends it once per second.
