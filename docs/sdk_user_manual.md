@@ -24,9 +24,9 @@ Named pipe tentative name "deeplink_sdk"
 
 ### 2.验证权限 Authority verification
 
-发送数据，deeplink会验证 id 和 token，不符合条件的连接会被拒绝并断开。
+发送数据，deeplink 会验证 ID 和 Token，其中 ID 表示渠道号，最好包含国家和代理商等标识，而 Token 字段在 1.0.2.1 版本之后废弃。
 
-Send data, deeplink will verify the id and token, and the connection that does not meet the conditions will be rejected and disconnected.
+Send data, deeplink will verify the ID and Token. The ID indicates the channel number, and it is best to include national and agent logos, and the Token field is abandoned after version 1.0.2.1.
 
 ```json
 {

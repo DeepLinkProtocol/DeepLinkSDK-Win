@@ -1,32 +1,30 @@
 # DeepLinkSDK
 
-deeplink sdk
-
-[English Readme](./README_en.md)
+SDK of the Deeplink program
 
 ## deeplink_ui
 
-使用 qt 渲染网页页面的示例。
+An example of rendering a web page using qt.
 
-参考项目: <https://doc.qt.io/qt-6/qtwebengine-webenginewidgets-simplebrowser-example.html>
+Reference project: <https://doc.qt.io/qt-6/qtwebengine-webenginewidgets-simplebrowser-example.html>
 
-qt 与 JS 交互请查看 [bridge 类](./deeplink_ui/bridge.h), [JS 示例](./deeplink_ui/index.html)
+For interaction between qt and JS, please check [bridge class](./deeplink_ui/bridge.h), [JS example](./deeplink_ui/index.html)
 
-不要忘记 [qwebchannel.js](./deeplink_ui/qwebchannel.js)
+Do not forget [qwebchannel.js](./deeplink_ui/qwebchannel.js)
 
 ## sdk_example
 
-用 QT 实现的一个访问接口的示例。
+Example of a provider implemented with QT.
 
-[SDK接口文档](./docs/sdk_user_manual.md)
+[DeepLink SDK USER MANUAL](./docs/sdk_user_manual.md)
 
 ## win32_sdk_example
 
-用纯 WIN32 API 实现的一个访问接口的示例。
+Example of a provider implemented with pure WIN32 API.
 
-## 注意
+## Notice
 
-所有代码示例仅供参考。
+All code samples are for reference only.
 
-- [配置文件相关说明](./docs/configuration.md)
-- [云网吧关键信息](./docs/cloud_internet_cafe_key_information.md)
+- [Configuration file documentation](./docs/configuration_en.md)
+- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information_en.md)
