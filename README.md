@@ -28,3 +28,4 @@ All code samples are for reference only.
 
 - [Configuration file documentation](./docs/configuration_en.md)
 - [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information_en.md)
+- [Installation Instructions](./docs/installation_instructions.md)
