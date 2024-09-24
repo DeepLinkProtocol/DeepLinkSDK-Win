@@ -28,12 +28,16 @@ Named pipe tentative name "deeplink_sdk"
 
 Send data, deeplink will verify the ID and Token. The ID indicates the channel number, and it is best to include national and agent logos, and the Token field is abandoned after version 1.0.2.1.
 
+>有客户反馈，在 `%appdata%/deeplink/config.ini` 中明文保存钱包的 Token 可能会有信息泄露、盗用的安全隐患，因此自 1.0.2.8 版本开始，恢复此接口的 Token 字段的使用，使用此接口的 Token 字段将钱包的 Token 传递给 DeepLink 服务，DeepLink 服务只会将 Token 保存在内存中，不会保存在任何文件中，提高了不使用 deeplink_ui.exe 的用户钱包的安全性。
+
+>Some users have reported that saving the wallet token in plain text in `%appdata%/deeplink/config.ini` may have security risks of information leakage and theft. Therefore, starting from version 1.0.2.8, the use of the token field of this interface is restored. The token field of this interface is used to pass the wallet token to the DeepLink service. The DeepLink service will only save the token in memory, not in any file, which improves the security of the wallet of users who do not use deeplink_ui.exe.
+
 ```json
 {
     "method": "auth",
     "data": {
         "id": "deeplink_test",
-        "token": "0123456789"
+        "token": "xxxxxxxxx"
     }
 }
 ```
