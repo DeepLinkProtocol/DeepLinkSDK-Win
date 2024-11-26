@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
     void showMessage(const QString &message);
-    void writeMessage(const QString &message, QLocalSocket *client);
+    void writeMessage(const QByteArray &message, QLocalSocket *client);
     void createRemoteIpc(const QString &ipc_name);
     void getRemoteControlledPrompt();
     void getAppVersion();
@@ -51,7 +51,7 @@ protected slots:
     void onIpcDisconnected();
     void onErrorOccurred(QLocalSocket::LocalSocketError socketError);
     void onReadyRead();
-    void onIpcMessageReceived(const QString &message);
+    void onIpcMessageReceived(const QByteArray &message);
     // ipc with remote video process
     void onRemoteIpcConnected();
     void onRemoteIpcDisconnected();
@@ -59,7 +59,7 @@ protected slots:
     void onRemoteIpcReadyRead();
 
 signals:
-    void ipcMessageReceived(const QString &message);
+    void ipcMessageReceived(const QByteArray &message);
 
 private:
     Ui::MainWindow *ui;

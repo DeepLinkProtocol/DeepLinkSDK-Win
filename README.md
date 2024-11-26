@@ -16,7 +16,7 @@ Do not forget [qwebchannel.js](./deeplink_ui/qwebchannel.js)
 
 Example of a provider implemented with QT.
 
-[DeepLink SDK USER MANUAL](./docs/sdk_user_manual.md)
+[DeepLink SDK USER MANUAL](./docs/sdk_user_manual_en.md)
 
 ## win32_sdk_example
 

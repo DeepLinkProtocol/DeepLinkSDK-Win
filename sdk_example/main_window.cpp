@@ -34,7 +34,7 @@ void MainWindow::showMessage(const QString &message)
     edit->append(message);
 }
 
-void MainWindow::writeMessage(const QString &message, QLocalSocket *client)
+void MainWindow::writeMessage(const QByteArray &message, QLocalSocket *client)
 {
     if (client->state() != QLocalSocket::ConnectedState) {
         showMessage("write failed because of ipc is not connected");
@@ -45,7 +45,6 @@ void MainWindow::writeMessage(const QString &message, QLocalSocket *client)
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setByteOrder(QDataStream::LittleEndian);
     out.setVersion(QDataStream::Qt_5_10);
-    out << quint32(message.size());
     out << message;
     // qDebug() << "ipc send:" << block;
     client->write(block);
@@ -70,7 +69,7 @@ void MainWindow::getRemoteControlledPrompt()
     root["method"] = "getRemoteControlledPrompt";
     QJsonObject data_obj;
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, ipc);
 }
@@ -85,7 +84,7 @@ void MainWindow::getAppVersion()
     root["method"] = "getAppVersion";
     QJsonObject data_obj;
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, ipc);
 }
@@ -122,7 +121,7 @@ void MainWindow::on_pbtnAuth_clicked()
         data_obj["id"] = id;
         data_obj["token"] = token;
         root["data"] = data_obj;
-        QString message = QJsonDocument(root).toJson();
+        QByteArray message = QJsonDocument(root).toJson();
         // qDebug() << message;
         writeMessage(message, ipc);
     }
@@ -137,7 +136,7 @@ void MainWindow::on_pbtnGetDeviceInfo_clicked()
     // JSON message
     QJsonObject root;
     root["method"] = "getDeviceInfo";
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, ipc);
 }
@@ -168,7 +167,7 @@ void MainWindow::on_pbtnOpenRemote_clicked()
         if (chbMicrophone)
             data_obj["microphone"] = chbMicrophone->isChecked();
         root["data"] = data_obj;
-        QString message = QJsonDocument(root).toJson();
+        QByteArray message = QJsonDocument(root).toJson();
         // qDebug() << message;
         writeMessage(message, ipc);
     }
@@ -182,7 +181,7 @@ void MainWindow::on_pbtnCloseRemote_clicked()
         root["method"] = "quit";
         QJsonObject data_obj;
         root["data"] = data_obj;
-        QString message = QJsonDocument(root).toJson();
+        QByteArray message = QJsonDocument(root).toJson();
         // qDebug() << message;
         writeMessage(message, remote_ipc);
         return;
@@ -202,7 +201,7 @@ void MainWindow::on_pbtnCloseRemote_clicked()
         QJsonObject data_obj;
         data_obj["device"] = id;
         root["data"] = data_obj;
-        QString message = QJsonDocument(root).toJson();
+        QByteArray message = QJsonDocument(root).toJson();
         // qDebug() << message;
         writeMessage(message, ipc);
     }
@@ -258,30 +257,29 @@ void MainWindow::onReadyRead()
     in.setByteOrder(QDataStream::LittleEndian);
     in.setVersion(QDataStream::Qt_5_10);
     while (!in.atEnd()) {
-        quint32 block_size = 0;
         if (ipc->bytesAvailable() < (int)sizeof(quint32)) {
             showMessage("read message length failed");
             return;
         }
-        in >> block_size;
-        if (ipc->bytesAvailable() < block_size || in.atEnd()) {
+
+        QByteArray message;
+        in >> message;
+        if (message.isEmpty()) {
             showMessage("read message body failed");
             return;
         }
-        QString message;
-        in >> message;
 
         emit ipcMessageReceived(message);
     }
 }
 
-void MainWindow::onIpcMessageReceived(const QString &message)
+void MainWindow::onIpcMessageReceived(const QByteArray &message)
 {
     showMessage("ipc received: " + message);
 
     // parse received message
     QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8(), &error);
+    QJsonDocument doc = QJsonDocument::fromJson(message, &error);
     if (error.error == QJsonParseError::NoError && !doc.isNull()) {
         QJsonObject root_obj = doc.object();
         if (root_obj.contains("method") && root_obj["method"].isString()) {
@@ -384,18 +382,17 @@ void MainWindow::onRemoteIpcReadyRead()
     in.setByteOrder(QDataStream::LittleEndian);
     in.setVersion(QDataStream::Qt_5_10);
     while (!in.atEnd()) {
-        quint32 block_size = 0;
         if (client->bytesAvailable() < (int)sizeof(quint32)) {
             showMessage("read message length failed in ipc of remote video process");
             return;
         }
-        in >> block_size;
-        if (client->bytesAvailable() < block_size || in.atEnd()) {
+
+        QByteArray message;
+        in >> message;
+        if (message.isEmpty()) {
             showMessage("read message body failed in ipc of remote video process");
             return;
         }
-        QString message;
-        in >> message;
         showMessage("ipc of remote video process received: " + message);
     }
 }
@@ -411,7 +408,7 @@ void MainWindow::on_pbtnSetConnectOption_clicked()
     data_obj["option"] = kOptionVideoBitrate;
     data_obj["value"] = (click_cout % 2 == 0 ? "0" : "40");
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, remote_ipc);
     ++click_cout;
@@ -433,7 +430,7 @@ void MainWindow::on_pbtnSendData_clicked()
     data_obj["bool"] = bool_value;
     data_obj["string"] = "this is a test string";
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, remote_ipc);
     ++int_value;
@@ -458,7 +455,7 @@ void MainWindow::on_pbtnCloseRemoteControlled_clicked()
         QJsonObject data_obj;
         data_obj["device"] = id;
         root["data"] = data_obj;
-        QString message = QJsonDocument(root).toJson();
+        QByteArray message = QJsonDocument(root).toJson();
         // qDebug() << message;
         writeMessage(message, ipc);
     }
@@ -478,7 +475,7 @@ void MainWindow::onRemoteControlledSwitchStateChanged(int arg1)
     QJsonObject data_obj;
     data_obj["value"] = chb->isChecked() ? "on" : "off";
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, ipc);
 }
@@ -506,7 +503,7 @@ void MainWindow::on_pbtnSendData2_clicked()
     data_obj["bool"] = bool_value;
     data_obj["string"] = "this is a test string";
     root["data"] = data_obj;
-    QString message = QJsonDocument(root).toJson();
+    QByteArray message = QJsonDocument(root).toJson();
     // qDebug() << message;
     writeMessage(message, ipc);
     ++int_value;
