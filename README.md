@@ -10,7 +10,7 @@ View and download the [latest SDK version](https://github.com/DeepLinkProtocol/D
 
 You can also view it on the https://download.deeplink.cloud page.
 
-After the SDK version is installed, a registry key named "InstallType" with a value of "SDK" will be written in the registry HKLM `"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\DeepLink"`
+After the SDK version is installed, a registry key named "InstallType" with a value of "SDK" will be written in the registry HKLM `"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\DeepLink"`.
 
 ## deeplink_ui
 
@@ -26,7 +26,7 @@ Do not forget [qwebchannel.js](./deeplink_ui/qwebchannel.js)
 
 Example of a provider implemented with QT.
 
-[DeepLink SDK USER MANUAL](./docs/sdk_user_manual_en.md)
+[DeepLink SDK USER MANUAL](./docs/sdk_user_manual.md)
 
 ## win32_sdk_example
 
@@ -36,6 +36,6 @@ Example of a provider implemented with pure WIN32 API.
 
 All code samples are for reference only.
 
-- [Configuration file documentation](./docs/configuration_en.md)
-- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information_en.md)
+- [Configuration file documentation](./docs/configuration.md)
+- [Cloud Internet Cafe key information](./docs/cloud_internet_cafe_key_information.md)
 - [Installation Instructions](./docs/installation_instructions.md)
