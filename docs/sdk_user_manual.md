@@ -203,7 +203,25 @@ Reply data:
 
 Using this interface will forcibly end the process. It is recommended to use UI interface operations such as the close button of the remote window to end the remote gracefully.
 
-### 2.5. Set some parameters of the remote connection
+### 2.5. Get notified when remote connection ends
+
+Received data:
+
+```json
+{
+    "method": "connectClosed",
+    "data": {
+        // device id of the remote device
+        "device": "123456789",
+        // the pid of rmeote process
+        "pid": 2936
+    }
+}
+```
+
+Note: This message does not require a reply.
+
+### 2.6. Set some parameters of the remote connection
 
 Send data:
 
@@ -231,7 +249,7 @@ For options, return values and error codes, please refer to [deeplink_sdk.h](../
 
 Note: This message should be communicated in the new pipeline created in the remote video process, refer to 2.3.Get remote transmission status.
 
-### 2.6. Get notified when remote controlled is started
+### 2.7. Get notified when remote controlled is started
 
 Received data:
 
@@ -247,7 +265,7 @@ Received data:
 
 Note: This message does not require a reply.
 
-### 2.7. Close the remote controlled state
+### 2.8. Close the remote controlled state
 
 Send data:
 
@@ -271,7 +289,7 @@ Reply data:
 }
 ```
 
-### 2.8. Get notified when remote controlled is stopped
+### 2.9. Get notified when remote controlled is stopped
 
 Received data:
 
@@ -287,7 +305,7 @@ Received data:
 
 Note: This message does not require a reply.
 
-### 2.9. Enable/disable prompt window when remote controled is started
+### 2.10. Enable/disable prompt window when remote controled is started
 
 Send data:
 
@@ -332,7 +350,7 @@ Reply data:
 }
 ```
 
-### 2.10. The remote video process communicates with the controlled end
+### 2.11. The remote video process communicates with the controlled end
 
 1. Either party can send data.
 
