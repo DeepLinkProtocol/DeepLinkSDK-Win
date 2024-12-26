@@ -65,6 +65,8 @@ DeepLink 是一款基于区块链技术的远程控制软件，SDK 版本提供�
 
 >VBCable Driver: <https://vb-audio.com/Cable/>
 
+DeepLink 服务在收到此请求后，会启动一个子进程，使用从服务器获取的 NFT 等信息在子进程中建立远程连接，传输音视频流。
+
 远程视频进程会创建一个新的管道用来传输状态信息，管道名称见如下回复。
 
 ```json
@@ -73,7 +75,8 @@ DeepLink 是一款基于区块链技术的远程控制软件，SDK 版本提供�
     "code": 0,
     "message": "ok",
     "data": {
-        "remote_ipc": "connect001"
+        "remote_ipc": "deeplink_rvp_9176",
+        "remote_pid": 9176
     }
 }
 ```
@@ -176,10 +179,14 @@ DeepLink 是一款基于区块链技术的远程控制软件，SDK 版本提供�
     "method": "closeConnect",
     "data": {
         // 远程设备的识别码
-        "device": "123456789"
+        "device": "123456789",
+        // 远程子进程的 pid
+        "pid": 9176
     }
 }
 ```
+
+"device" 和 "pid" 至少要传递一个，如果两个都有，服务在遍历子进程列表时，满足其中任意一个条件的远程连接就会被关闭。
 
 回复数据
 ```json

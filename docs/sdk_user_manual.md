@@ -67,6 +67,8 @@ Send data:
 
 >VBCable Driver: <https://vb-audio.com/Cable/>
 
+After receiving this request, the DeepLink service will start a child process, use the NFT and other information obtained from the server to establish a remote connection in the child process, and transmit audio and video streams.
+
 The remote video process will create a new pipe to transmit status information, see the reply below for the name of the pipe.
 
 ```json
@@ -75,7 +77,8 @@ The remote video process will create a new pipe to transmit status information, 
     "code": 0,
     "message": "ok",
     "data": {
-        "remote_ipc": "connect001"
+        "remote_ipc": "deeplink_rvp_9176",
+        "remote_pid": 9176
     }
 }
 ```
@@ -179,10 +182,14 @@ Send data:
     "method": "closeConnect",
     "data": {
         // device id of the remote device
-        "device": "123456789"
+        "device": "123456789",
+        // the pid of rmeote process
+        "pid": 9176
     }
 }
 ```
+
+At least one of "device" and "pid" must be passed. If both are present, when the service traverses the child process list, the remote connection that meets any of the conditions will be closed.
 
 Reply data:
 
