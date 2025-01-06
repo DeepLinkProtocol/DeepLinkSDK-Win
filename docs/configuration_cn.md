@@ -55,6 +55,9 @@ height=1080
 fps=0
 # 虚拟显示器创建类型
 # 0 复制主控端edid信息, 或者尽量跟主控端接近;
+# 1 3840x2160x60
+# 2 2560x1440x60
+# 3 1920x1080x60
 vdisplay=0
 
 [safe]
@@ -68,12 +71,34 @@ lockonprivacy=0
 [net]
 # 广域网带宽预测上限，单位 M
 max_bandwidth_wan=10
+# 设置特定端口，配合端口映射使用
+minport=20000
+maxport=21000
+
+[setting]
+# 0 Chinese
+# 1 English
+# 2 Korean
+# 3 Japanese
+language=0
+# 右下角显示 FPS delay 等信息
+showfps=1
+# 1 use winapi sendinput
+# 2 use hid driver
+input_type=1
+# 1:1
+# 自适应
+default_display_scale=0
 
 [hotkey]
 # 设置热键， 现在为win+某个字符
 windowed_hk=z
 minimize_hk=x
 switchscreen_hk=c
+
+[bitrate]
+# 连接到 677276640 时，如果是广域网，限速 8m，局域网限速 40m，如果为 0 则由程序探测网速来动态决定
+677276640=8|40
 
 [lab]
 # 全屏时不显示小箭头
@@ -120,6 +145,13 @@ debug_wnd=1
 [encode]
 param = -preset ll_hq -rc vbr_hq
 vbv = 5
+```
+
+有些游戏使用绝对坐标会有问题，强制切换为相对坐标，光标带在视频中
+%binpath% local.black
+```ini
+[black]
+list=valorant.exe
 ```
 
 注意: 以上的 `C:\Program Files (x86)\DeepLink` 指 DeepLink 的安装目录，视个人情况而定。

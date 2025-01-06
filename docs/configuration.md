@@ -55,6 +55,9 @@ height=1080
 fps=0
 # Type of virtual display creation.
 # 0 Copy the EDID information of the controlling device, or closely match it as much as possible.
+# 1 3840x2160x60
+# 2 2560x1440x60
+# 3 1920x1080x60
 vdisplay=0
 
 [safe]
@@ -68,12 +71,36 @@ lockonprivacy=0
 [net]
 # Upper limit for wide area network (WAN) bandwidth prediction, in megabits (M).
 max_bandwidth_wan=10
+# Set a specific port and use it with port mapping
+minport=20000
+maxport=21000
+
+[setting]
+# 0 Chinese
+# 1 English
+# 2 Korean
+# 3 Japanese
+language=0
+# Display FPS delay and other information in the lower right corner
+showfps=1
+# 1 use winapi sendinput
+# 2 use hid driver
+input_type=1
+# 1:1
+# Adaptive
+default_display_scale=0
 
 [hotkey]
 # Set hotkeys, currently set to Win + a specific character.
 windowed_hk=z
 minimize_hk=x
 switchscreen_hk=c
+
+[bitrate]
+# When connected to 677276640, if it is a wide area network, the speed limit is 8m,
+# and the speed limit is 40m for a local area network. If it is 0, it is dynamically
+# determined by the program detecting the network speed
+677276640=8|40
 
 [lab]
 # Do not display the small arrow when in full screen mode.
@@ -120,6 +147,14 @@ If the image becomes blurry when there are significant changes in the picture ov
 [encode]
 param = -preset ll_hq -rc vbr_hq
 vbv = 5
+```
+
+Some games will have problems using absolute coordinates. Forced to switch to relative coordinates, the cursor will be in the video
+
+%binpath% local.black
+```ini
+[black]
+list=valorant.exe
 ```
 
 Note: The above-mentioned `C:\Program Files (x86)\DeepLink` refers to the installation directory of DeepLink, which may vary depending on individual circumstances.
