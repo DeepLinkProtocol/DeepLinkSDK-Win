@@ -396,6 +396,30 @@ Reply data:
 
 Note: This message does not require a reply.
 
+### 2.12 Set a custom port range
+
+deeplink v1.0.3.4 added
+
+Send data:
+```json
+{
+    "method": "setPortRange",
+    "data": {
+        "start_port": 20000,
+        "end_port": 20010
+    }
+}
+```
+
+Reply data:
+```json
+{
+    "method": "setPortRange",
+    "code": 0,
+    "message": "ok"
+}
+```
+
 ## 3. Device info interface
 
 In addition to the above-mentioned interfaces, there are also some interfaces used to obtain device information.

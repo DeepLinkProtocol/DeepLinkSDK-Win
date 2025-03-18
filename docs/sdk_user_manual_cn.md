@@ -379,6 +379,30 @@ DeepLink 服务在收到此请求后，会启动一个子进程，使用从服�
 
 注意: 此消息不需要回复。
 
+### 2.12 设置自定义的端口范围
+
+deeplink v1.0.3.4 增加
+
+发送数据
+```json
+{
+    "method": "setPortRange",
+    "data": {
+        "start_port": 20000,
+        "end_port": 20010
+    }
+}
+```
+
+回复数据
+```json
+{
+    "method": "setPortRange",
+    "code": 0,
+    "message": "ok"
+}
+```
+
 ## 3. 设备信息接口
 
 除了上述的接口外，还有些接口用来获取设备信息。
