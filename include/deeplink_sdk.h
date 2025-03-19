@@ -26,7 +26,7 @@ enum QDESKOption {
     kOptionVideoLossless, // 开启或关闭"无损画质"，默认关闭
     kOptionVideoBitrate, // 设置固定"视频码率", 单位Mbit/s， 0为auto;
     kOptionSound,
-    kOptionInput, // 开启或关闭"输入"，默认开启，暂不实现
+    kOptionUseHidInput, // 使用hid鼠标，0为关闭，1为打开;
     kOptionRemoteDeviceMute, // 开启或关闭"被控设备静音"，默认关闭。
 
     kOptionCursor, // 设置"光标"，默认本地光标
