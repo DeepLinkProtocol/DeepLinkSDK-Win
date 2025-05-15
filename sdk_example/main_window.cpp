@@ -4,8 +4,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "../include/deeplink_sdk.h"
+
+#include <qt_windows.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -292,6 +295,15 @@ void MainWindow::onIpcMessageReceived(const QByteArray &message)
                         // createRemoteIpc(remote_ipc);
                         QLineEdit *edit = findChild<QLineEdit*>("leRemoteIpcName");
                         if (edit) edit->setText(remote_ipc);
+                        qint64 remote_pid = data_obj["remote_pid"].toInteger();
+                        QTimer::singleShot(3000, this, [remote_pid](){
+                            QString temp = QString("QDesk %1").arg(remote_pid);
+                            std::wstring class_name = temp.toStdWString();
+                            HWND hWnd = FindWindow(class_name.c_str(), NULL);
+                            if (hWnd != NULL) {
+                                ::SetForegroundWindow(hWnd);
+                            }
+                        });
                     }
                 }
             } else if (method.compare("auth") == 0) {

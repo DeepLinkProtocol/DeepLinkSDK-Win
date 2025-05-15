@@ -85,6 +85,22 @@ The remote video process will create a new pipe to transmit status information, 
 
 This pipe will be closed when the remote video process ends.
 
+The remote window opened using the SDK cannot be automatically pinned to the foreground window of the desktop and may be blocked by other focus windows.
+This is because the remote window process is created by the DeepLink service process, but the service process is a background process without a window interface and does not have the permission to set the foreground window.
+The solution is to find a desktop application with an interface, and let this program find the handle of the remote window (window class name "QDesk <remote process id>") and call SetForegroundWindow to set the remote window as the foreground window.
+
+```cpp
+QString class_name = QString("QDesk %1").arg(remote_pid);
+HWND hWnd = FindWindow(class_name, NULL);
+if (hWnd != NULL) {
+    SetForegroundWindow(hWnd);
+}
+```
+
+https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow?redirectedfrom=MSDN
+
+It is recommended to call the above code in the client desktop application that accesses the DeepLink SDK and initiates the remote connection.
+
 ### 2.3. Get remote transmission status
 
 After the remote video process starts, the following operations will be performed:

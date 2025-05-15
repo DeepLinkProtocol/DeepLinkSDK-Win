@@ -83,6 +83,22 @@ DeepLink 服务在收到此请求后，会启动一个子进程，使用从服�
 
 这个管道会在远程视频进程结束时关闭。
 
+使用 SDK 打开的远程窗口无法自动置顶成为桌面的最前台窗口，可能会被其他焦点窗口遮挡。
+这是因为远程窗口进程是由 DeepLink 服务进程创建的，但是服务进程是后台无窗口界面的进程，没有设置前台窗口的权限。
+解决办法就是找一个有界面的桌面应用程序，由这个程序去查找远程窗口(窗口类名 "QDesk <进程id>")的句柄，调用 SetForegroundWindow 把远程窗口设置为前台窗口。
+
+```cpp
+QString class_name = QString("QDesk %1").arg(remote_pid);
+HWND hWnd = FindWindow(class_name, NULL);
+if (hWnd != NULL) {
+    SetForegroundWindow(hWnd);
+}
+```
+
+https://learn.microsoft.com/zh-cn/windows/win32/api/winuser/nf-winuser-setforegroundwindow?redirectedfrom=MSDN
+
+建议在接入 DeepLink SDK 和发起远程连接的客户桌面应用中调用以上代码。
+
 ### 2.3. 获取远程传输状态信息
 
 远程视频进程启动后，会进行以下操作:
