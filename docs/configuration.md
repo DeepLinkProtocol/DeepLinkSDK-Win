@@ -19,6 +19,8 @@ id=123456789
 passwd=xxxxxx
 # Ignore the device code option above, always get the device code from the server, it is recommended to set it to 1 to start this function in the diskless environment of the Internet cafe
 always_refresh_id=0
+# Used with always_refresh_id, the verification code can be updated after booting. It is recommended to set it to 1 to start this function in the diskless environment of the Internet cafe.
+always_refresh_passwd=0
 
 [app]
 # Log level.
