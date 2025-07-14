@@ -168,4 +168,11 @@ Some games will have problems using absolute coordinates. Forced to switch to re
 list=valorant.exe
 ```
 
+For Internet cafe billing software detection, start automatic mining at idle time, and fill in the process name of the billing software in `C:\Program Files (x86)\DeepLink\cafe.ini`:
+
+```ini
+[billing]
+pname=pmclient.exe,WmClt.exe
+```
+
 Note: The above-mentioned `C:\Program Files (x86)\DeepLink` refers to the installation directory of DeepLink, which may vary depending on individual circumstances.

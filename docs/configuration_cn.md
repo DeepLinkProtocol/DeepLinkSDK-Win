@@ -164,4 +164,11 @@ vbv = 5
 list=valorant.exe
 ```
 
+对于网吧计费软件探测，在空闲时刻启动自动挖矿，需要在 `C:\Program Files (x86)\DeepLink\cafe.ini` 中填写计费软件的进程名称：
+
+```ini
+[billing]
+pname=pmclient.exe,WmClt.exe
+```
+
 注意: 以上的 `C:\Program Files (x86)\DeepLink` 指 DeepLink 的安装目录，视个人情况而定。
