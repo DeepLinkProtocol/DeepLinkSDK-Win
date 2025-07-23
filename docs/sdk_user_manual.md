@@ -55,12 +55,28 @@ Send data:
     "data": {
         // device id of the remote device
         "device": "123456789",
-        // device password of the remote device
+        // device password of the remote device, which can be empty when using the wallet signature remotely
         "password": "123456",
         // Whether to open in full screen mode, the default is false (deeplink v0.0.0.5 added)
         "fullscreen": true,
         // Whether to enable microphone transmission, the default is false (deeplink v1.0.1.6 added). The controlled terminal needs to install VBCable Driver.
         "microphone": true,
+        // Wallet address, random number and signature, required when using the wallet signature remotely
+        "wallet": "",
+        "nonce": "",
+        "signature": "",
+        // Wallet type, the old DBC wallet uses "subscan"
+        "wallet_type": "evm",
+        // Wallet role, 0 is the default value, meaningless, 1 is your own wallet, 2 is the renter
+        "wallet_role": 0,
+        // Short-term rental start time, millisecond timestamp, no rental, pass 0 or no
+        "rent_start_time": 0,
+        // The rental duration of the short-term rental, in seconds, if not rented, pass 0 or not
+        "rent_time": 0,
+        // After the short-term rental, it is transmitted to the controlled end to create a virtual display and display the DEE screen
+        "width": 1920,
+        "height": 1080,
+        "fps": 60,
     }
 }
 ```

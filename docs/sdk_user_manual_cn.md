@@ -53,12 +53,28 @@ DeepLink 是一款基于区块链技术的远程控制软件，SDK 版本提供�
     "data": {
         // 远程设备的识别码
         "device": "123456789",
-        // 远程设备的验证码
+        // 远程设备的验证码，使用钱包签名远程时可以为空
         "password": "123456",
         // 是否以全屏方式打开，默认为 false (deeplink v0.0.0.5 增加)
         "fullscreen": true,
         // 是否开启麦克风的传输，默认为 false (deeplink v1.0.1.6 增加)，需要被控端安装 VBCable Driver。
         "microphone": true,
+        // 钱包地址 随机数 和签名，使用钱包签名远程时需要
+        "wallet": "",
+        "nonce": "",
+        "signature": "",
+        // 钱包类型，老的 DBC 钱包用 "subscan"
+        "wallet_type": "evm",
+        // 钱包角色，0 是默认值，没有意义，1 是自己的钱包，2 是租用人
+        "wallet_role": 0,
+        // 短租的租用开始时间，毫秒级时间戳，没租用传 0 或者不传
+        "rent_start_time": 0,
+        // 短租的租用时长，单位秒，没租用传 0 或者不传
+        "rent_time": 0,
+        // 短租租用后，传到被控端创建虚拟显示器，展示 DEE 画面
+        "width": 1920,
+        "height": 1080,
+        "fps": 60,
     }
 }
 ```
